@@ -1,19 +1,29 @@
 import { RequestHandler } from 'express';
+
 import axios from '../utils/axios';
+import addrToGeocode from '../utils/geocode';
 
 export const welcome: RequestHandler = (req, res) => {
   res.send('<h1>Welcome. This is a weather api</h1>');
 };
 
 export const fetchWeather: RequestHandler<{
-  latitude: string;
-  longitude: string;
+  location: string;
 }> = (req, res) => {
-  const { latitude, longitude } = req.query;
-
-  const url = `/onecall?lat=${latitude}&lon=${longitude}&appid=${process.env.OWMKey}&exclude=minutely, daily`;
-  axios
-    .get(url)
-    .then((response) => res.status(200).send(response.data))
-    .catch((error) => res.status(400).send(error));
+  const { location } = req.query as { location: string };
+  addrToGeocode(location).then((response) => {
+    console.log(response);
+    if (response.isAxiosError) {
+      res.status(400).send(response);
+    } else {
+      axios
+        .get(
+          `/onecall?lat=${response.longitude}&lon=${response.latitude}&appid=${process.env.OWMKey}&exclude=minutely,daily`
+        )
+        .then((weather) => {
+          res.status(200).send(weather.data);
+        })
+        .catch((e) => res.status(400).send(e));
+    }
+  });
 };
