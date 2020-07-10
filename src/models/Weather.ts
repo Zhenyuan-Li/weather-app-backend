@@ -13,14 +13,22 @@ interface WeatherData {
 }
 
 export default class Weather {
-  static getWeatherData(
-    longitude: string,
-    latitude: string,
-    place: string
-  ): Promise<WeatherData> {
+  private longitude: string;
+
+  private latitude: string;
+
+  private place: string;
+
+  constructor(longitude: string, latitude: string, place: string) {
+    this.longitude = longitude;
+    this.latitude = latitude;
+    this.place = place;
+  }
+
+  get getWeatherData(): Promise<WeatherData> {
     return axios
       .get(
-        `/onecall?lat=${latitude}&lon=${longitude}&appid=${process.env.OWMKey}&units=metric`
+        `/onecall?lat=${this.latitude}&lon=${this.longitude}&appid=${process.env.OWMKey}&units=metric`
       )
       .then((response: AxiosResponse<OWMResponse>) => {
         const current = new CurrentWeather(response.data.current);
@@ -28,7 +36,7 @@ export default class Weather {
         response.data.daily.forEach((dailyData) => {
           forecast.push(new FutureWeather(dailyData));
         });
-        return { current, forecast, place };
+        return { current, forecast, place: this.place };
       })
       .catch((error) => {
         return error;

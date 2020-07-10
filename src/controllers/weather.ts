@@ -11,20 +11,22 @@ export const fetchWeather: RequestHandler<{
   location: string;
 }> = (req, res) => {
   const { location } = req.query as { location: string };
-  Geocode.addrToGeocode(location)
+
+  const geocode = new Geocode(location);
+  geocode.getGeocode
     .then((geoCodeRes) => {
       if (geoCodeRes.isAxiosError) {
         res.status(400).send(geoCodeRes);
       } else {
         const { longitude, latitude, place } = geoCodeRes;
-        Weather.getWeatherData(longitude, latitude, place).then(
-          (weatherRes) => {
-            if (weatherRes.isAxiosError) {
-              res.status(400).send(weatherRes);
-            }
-            res.status(200).send(weatherRes);
+
+        const weather = new Weather(longitude, latitude, place);
+        weather.getWeatherData.then((weatherRes) => {
+          if (weatherRes.isAxiosError) {
+            res.status(400).send(weatherRes);
           }
-        );
+          res.status(200).send(weatherRes);
+        });
       }
     })
     .catch((error) => res.status(400).send(error));
