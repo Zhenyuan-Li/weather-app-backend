@@ -10,14 +10,15 @@ export const welcome: RequestHandler = (req, res) => {
 
 export const fetchWeather: RequestHandler<{
   location: string;
-}> = (req, res) => {
+}> = (req, res, next) => {
   const { location } = req.query as { location: string };
 
   const geocode = new Geocode(location);
   geocode.getGeocode
     .then((geoCodeRes) => {
       if (geoCodeRes instanceof Error) {
-        responseFormatter(res, 400, "Can't find the city!", geoCodeRes);
+        next(geoCodeRes);
+        // responseFormatter(res, 400, "Can't find the city!", geoCodeRes);
       } else {
         const { longitude, latitude, place } = geoCodeRes;
 
