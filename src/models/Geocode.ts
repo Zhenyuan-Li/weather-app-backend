@@ -9,7 +9,6 @@ interface GeocodeData {
   place: string;
   latitude: string;
   longitude: string;
-  isAxiosError?: boolean;
 }
 
 export default class Geocode {
@@ -26,7 +25,7 @@ export default class Geocode {
     };
   }
 
-  get getGeocode(): Promise<GeocodeData> {
+  get getGeocode(): Promise<GeocodeData | Error> {
     return axios
       .get(`/${this.location}.json?access_token=${process.env.MapBoxToken}`)
       .then((response: AxiosResponse<MapBoxResponse>) => {
@@ -36,7 +35,7 @@ export default class Geocode {
 
         return { ...this.geocode };
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         return error;
       });
   }

@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
-import axios from '../utils/axios';
 
+import axios from '../utils/axios';
 import { OWMResponse } from '../utils/OWMResponse';
 import CurrentWeather from './CurrentWeather';
 import FutureWeather from './FutureWeather';
@@ -9,7 +9,6 @@ interface WeatherData {
   current: CurrentWeather;
   forecast: Array<FutureWeather>;
   place: string;
-  isAxiosError?: boolean;
 }
 
 export default class Weather {
@@ -25,7 +24,7 @@ export default class Weather {
     this.place = place;
   }
 
-  get getWeatherData(): Promise<WeatherData> {
+  get getWeatherData(): Promise<WeatherData | Error> {
     return axios
       .get(
         `/onecall?lat=${this.latitude}&lon=${this.longitude}&appid=${process.env.OWMKey}&units=metric`
@@ -38,7 +37,7 @@ export default class Weather {
         });
         return { current, forecast, place: this.place };
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         return error;
       });
   }
