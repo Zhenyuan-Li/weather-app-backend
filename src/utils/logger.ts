@@ -6,7 +6,7 @@ const logger = createLogger({
   format: format.combine(
     format.colorize(),
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    format.label({ label: path.basename(module.parent!.filename) }),
+    format.label({ label: 'Hello World' }),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     format.printf(
       (info) =>

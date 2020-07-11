@@ -18,18 +18,17 @@ export const fetchWeather: RequestHandler<{
     .then((geoCodeRes) => {
       if (geoCodeRes instanceof Error) {
         next(geoCodeRes);
-        // responseFormatter(res, 400, "Can't find the city!", geoCodeRes);
       } else {
         const { longitude, latitude, place } = geoCodeRes;
 
         const weather = new Weather(longitude, latitude, place);
         weather.getWeatherData.then((weatherRes) => {
           if (weatherRes instanceof Error) {
-            responseFormatter(res, 400, "Can't load weather!", weatherRes);
+            next(weatherRes);
           }
           responseFormatter(res, 200, 'Fetch successfully!', weatherRes);
         });
       }
     })
-    .catch((error) => res.status(400).send(error));
+    .catch((error) => next(error));
 };

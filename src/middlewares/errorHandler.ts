@@ -5,7 +5,6 @@ import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
-  console.log(error);
   if (error.response) {
     if (error.response.status === '429') {
       return responseFormatter(
