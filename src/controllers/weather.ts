@@ -5,7 +5,7 @@ import Weather from '../models/Weather';
 import responseFormatter from '../utils/responseFormatter';
 
 export const welcome: RequestHandler = (req, res) => {
-  res.send('<h1>Welcome. This is a weather api</h1>');
+  res.send('<h1>Welcome. This is a weather api.</h1>');
 };
 
 export const fetchWeather: RequestHandler<{
